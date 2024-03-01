@@ -7,6 +7,7 @@ TILESIZE = 16
 SCREEN_WIDTH = 50*TILESIZE
 SCREEN_HEIGHT = 40*TILESIZE
 WALLCOLOR = 3
+MAX_ARROW_FRAMES = 10
 
 pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=1)
 pyxel.load('assets.pyxres')
@@ -64,9 +65,10 @@ class Player(Agent):
     direction: str
     slashing: bool
     shooting: bool
-
+    arrow_frame: int
+    arrow_dir: str
     
-updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False)
+updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up')
 dummy = Moblin(x =  TILESIZE * 7, y = TILESIZE * 7, health = 3)
 sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
 slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
@@ -139,19 +141,26 @@ def updateWeaponPosition(weapon):
         weapon.x = updatedplayer.x - TILESIZE
         weapon.y = updatedplayer.y
 
-def updateArrowPosition(weapon):
-    if updatedplayer.direction == 'down':
-        weapon.x = updatedplayer.x
-        weapon.y = updatedplayer.y + TILESIZE
-    elif updatedplayer.direction == 'up':
-        weapon.x = updatedplayer.x
-        weapon.y = updatedplayer.y - TILESIZE
-    elif updatedplayer.direction == 'right':
-        weapon.x = updatedplayer.x + TILESIZE
-        weapon.y = updatedplayer.y
-    elif updatedplayer.direction == 'left':
-        weapon.x = updatedplayer.x - TILESIZE
-        weapon.y = updatedplayer.y
+def updateArrowPosition(arrow):
+    if updatedplayer.arrow_frame == MAX_ARROW_FRAMES:
+        updatedplayer.arrow_frame = 0
+    if updatedplayer.shooting and updatedplayer.arrow_frame == 0:
+        updatedplayer.arrow_frame += 1
+        updatedplayer.arrow_dir = updatedplayer.direction
+        arrow.x = updatedplayer.x
+        arrow.y = updatedplayer.y
+    if updatedplayer.arrow_frame > 0:
+        updatedplayer.arrow_frame += 1
+#     print('updatedplayer.arrow_frame', updatedplayer.arrow_frame)    
+    if updatedplayer.arrow_dir == 'down':
+        arrow.y += TILESIZE
+    elif updatedplayer.arrow_dir == 'up':
+        arrow.y -= TILESIZE
+    elif updatedplayer.arrow_dir == 'right':
+        arrow.x += TILESIZE
+    elif updatedplayer.arrow_dir == 'left':
+        arrow.x -= TILESIZE
+
 
 
 
@@ -216,6 +225,9 @@ def update():
         updatedplayer.shooting = False
     if slash_sword.x == dummy.x and slash_sword.y == dummy.y and updatedplayer.slashing == True:
         dummy.health -= 1
+    if arrow.x == dummy.x and arrow.y == dummy.y:
+        dummy.health -= 1
+        updatedplayer.arrow_frame = 0
         
 def draw():
     pyxel.cls(5)
@@ -249,17 +261,17 @@ def draw():
         elif updatedplayer.direction == 'left':
             pyxel.blt(slash_sword.x, slash_sword.y, 0, slash_sword.tile_x_left, slash_sword.tile_y_left, TILESIZE, TILESIZE, slash_sword.alpha)
             
-    if updatedplayer.shooting == True:       
-        if updatedplayer.direction == 'down':
+    if updatedplayer.arrow_frame > 0:       
+        if updatedplayer.arrow_dir == 'down':
             pyxel.blt(shoot_bow.x, shoot_bow.y, 0, shoot_bow.tile_x_down, shoot_bow.tile_y_down, TILESIZE, TILESIZE, shoot_bow.alpha)
             pyxel.blt(arrow.x, arrow.y, 0, arrow.tile_x_down, arrow.tile_y_down, TILESIZE, TILESIZE, arrow.alpha)
-        elif updatedplayer.direction == 'up':
+        elif updatedplayer.arrow_dir == 'up':
             pyxel.blt(shoot_bow.x, shoot_bow.y, 0, shoot_bow.tile_x_up, shoot_bow.tile_y_up, TILESIZE, TILESIZE, shoot_bow.alpha)
             pyxel.blt(arrow.x, arrow.y, 0, arrow.tile_x_up, arrow.tile_y_up, TILESIZE, TILESIZE, arrow.alpha)            
-        elif updatedplayer.direction == 'right':
+        elif updatedplayer.arrow_dir == 'right':
             pyxel.blt(shoot_bow.x, shoot_bow.y, 0, shoot_bow.tile_x_right, shoot_bow.tile_y_right, TILESIZE, TILESIZE, shoot_bow.alpha)
             pyxel.blt(arrow.x, arrow.y, 0, arrow.tile_x_right, arrow.tile_y_right, TILESIZE, TILESIZE, arrow.alpha)
-        elif updatedplayer.direction == 'left':
+        elif updatedplayer.arrow_dir == 'left':
             pyxel.blt(shoot_bow.x, shoot_bow.y, 0, shoot_bow.tile_x_left, shoot_bow.tile_y_left, TILESIZE, TILESIZE, shoot_bow.alpha)
             pyxel.blt(arrow.x, arrow.y, 0, arrow.tile_x_left, arrow.tile_y_left, TILESIZE, TILESIZE, arrow.alpha)
 

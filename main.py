@@ -76,6 +76,9 @@ shoot_bow =   ItemWithDirection(x = -20*TILESIZE, y = -20*TILESIZE, tile_x_down 
 arrow = ItemWithDirection(x = -30*TILESIZE, y = -30*TILESIZE, tile_x_down = 16, tile_y_down = 48, tile_x_up = 0,  tile_y_up = 48,tile_x_left = 32, tile_y_left = 48, tile_x_right = 48, tile_y_right = 48, alpha = 7)
 bow = Item(x = 26*TILESIZE, y = 19*TILESIZE, name = 'Bow', tile_x = 32, tile_y = 0)
 quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , tile_y = 0)
+open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
+closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
+key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
 secretdoor1 = Rect(x = 23*TILESIZE, y = 27*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 
@@ -228,7 +231,13 @@ def update():
     if arrow.x == dummy.x and arrow.y == dummy.y:
         dummy.health -= 1
         updatedplayer.arrow_frame = 0
-        
+    if closed_chest.x == updatedplayer.x and closed_chest.y == updatedplayer.y:
+        closed_chest.x = -53
+        closed_chest.y = -53
+        open_chest.x = 24*TILESIZE
+        open_chest.y = 19*TILESIZE
+        key.x = TILESIZE * 11
+        key.y = TILESIZE * 35 
 def draw():
     pyxel.cls(5)
     for wall in walls:
@@ -237,6 +246,9 @@ def draw():
     pyxel.blt(sword.x, sword.y, 0, sword.tile_x, sword.tile_y, TILESIZE, TILESIZE, 14)
     pyxel.blt(bow.x, bow.y, 0, bow.tile_x, bow.tile_y, TILESIZE, TILESIZE, 14)
     pyxel.blt(quiver.x, quiver.y, 0, quiver.tile_x, quiver.tile_y, TILESIZE, TILESIZE, 14)
+    pyxel.blt(closed_chest.x, closed_chest.y, 0, closed_chest.tile_x, closed_chest.tile_y, TILESIZE, TILESIZE)
+    pyxel.blt(open_chest.x, open_chest.y, 0, open_chest.tile_x, open_chest.tile_y, TILESIZE, TILESIZE)
+    pyxel.blt(key.x, key.y, 0, key.tile_x, key.tile_y, TILESIZE, TILESIZE, 7)
     pyxel.blt(dummy.x, dummy.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
     if dummy.health <= 0:
        dummy.x = -70

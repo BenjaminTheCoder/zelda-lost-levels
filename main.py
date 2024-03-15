@@ -98,7 +98,7 @@ walls = [
         Rect(x = 17*TILESIZE, y = 2*TILESIZE, w = 16*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 32*TILESIZE, y = 2*TILESIZE, w = 1*TILESIZE, h = 7*TILESIZE, color=WALLCOLOR),
         Rect(x = 2*TILESIZE, y = 30*TILESIZE, w = 14*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
-        Rect(x = 24*TILESIZE, y = 27*TILESIZE, w = 10*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
+        Rect(x = 24*TILESIZE, y = 27*TILESIZE, w = 9*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 32*TILESIZE, y = 17*TILESIZE, w = 1*TILESIZE, h = 11*TILESIZE, color=WALLCOLOR),
         Rect(x = 32*TILESIZE, y = 16*TILESIZE, w = 15*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 16*TILESIZE, y = 14*TILESIZE, w = 1*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
@@ -106,10 +106,22 @@ walls = [
 
     ]
 
+doors = [
+        Rect(x=256, y=112, w=16, h=112, color=0)
+
+    
+    
+    ]
+
+dr1 = Rect(x = 256-TILESIZE, y = 112, w = 16, h = 112, color=7)
+
 def canYouGoThere(nextX, nextY):
     canGo = True
     for wall in walls:
         if nextX >= wall.x and nextX < wall.x + wall.w and nextY >= wall.y and nextY < wall.h + wall.y:
+            canGo = False
+    for door in doors:
+        if nextX >= door.x and nextX < door.x + door.w and nextY >= door.y and nextY < door.h + door.y:
             canGo = False
     return canGo
 
@@ -175,6 +187,8 @@ def update():
     updatedplayer.shooting = False
     if pyxel.btnp(pyxel.KEY_Q):
         pyxel.quit()
+    #elif pyxel.btnp(pyxel.KEY_P):
+        #print(getDebugRect())
     elif pyxel.btnp(pyxel.KEY_SPACE):
         updatedplayer.slashing = True
     elif pyxel.btnp(pyxel.KEY_B):
@@ -232,14 +246,23 @@ def update():
         dummy.health -= 1
         updatedplayer.arrow_frame = 0
     if closed_chest.x == updatedplayer.x and closed_chest.y == updatedplayer.y:
+        updatedplayer.inventory.append(key)
         closed_chest.x = -53
         closed_chest.y = -53
         open_chest.x = 24*TILESIZE
         open_chest.y = 19*TILESIZE
         key.x = TILESIZE * 11
-        key.y = TILESIZE * 35 
+        key.y = TILESIZE * 35
+    for door in doors:
+        if door.color == 0 and key in updatedplayer.inventory and updatedplayer.x >= dr1.x and updatedplayer.x < dr1.x+dr1.w and updatedplayer.y >= dr1.y and updatedplayer.y < dr1.y+dr1.h:
+            door.x = -1000000
+            door.x = -1000000
+        
+        
 def draw():
     pyxel.cls(5)
+    for door in doors:
+        pyxel.rect(door.x, door.y, door.w, door.h, door.color)    
     for wall in walls:
         pyxel.rect(wall.x, wall.y, wall.w, wall.h, wall.color)
     #debug_rect = getDebugRect()
@@ -252,7 +275,7 @@ def draw():
     pyxel.blt(dummy.x, dummy.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
     if dummy.health <= 0:
        dummy.x = -70
-       dummy.y = -70 
+       dummy.y = -70
     #pyxel.rect(debug_rect.x, debug_rect.y, debug_rect.w, debug_rect.h, debug_rect.color)
     if updatedplayer.direction == 'down':
         pyxel.blt(updatedplayer.x, updatedplayer.y, 0, 0, 0, 16, 16, 7)

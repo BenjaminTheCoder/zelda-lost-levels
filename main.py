@@ -2,6 +2,8 @@
 
 import pyxel
 from dataclasses import dataclass
+import random
+import math
 
 TILESIZE = 16
 SCREEN_WIDTH = 50*TILESIZE
@@ -11,7 +13,7 @@ MAX_ARROW_FRAMES = 10
 
 pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=1)
 pyxel.load('assets.pyxres')
-pyxel.mouse(False)
+pyxel.mouse(True)
 
 @dataclass
 class Rect:
@@ -69,9 +71,8 @@ class Player(Agent):
     arrow_dir: str
     health: int
     
-heart = Item(x = 45 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
-updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
-dummy = Moblin(x =  TILESIZE * 7, y = TILESIZE * 7, health = 3)
+heart = Item(x = 27 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
+updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 100)
 sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
 slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
 shoot_bow =   ItemWithDirection(x = -20*TILESIZE, y = -20*TILESIZE, tile_x_down = 16, tile_y_down = 64, tile_x_up = 0,  tile_y_up = 64,tile_x_left = 32, tile_y_left = 64, tile_x_right = 48, tile_y_right = 64, alpha = 14)
@@ -81,6 +82,7 @@ quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , t
 open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
 closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
 key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
+Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 20)
 secretdoor1 = Rect(x = 23*TILESIZE, y = 27*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 
@@ -109,10 +111,21 @@ walls = [
     ]
 
 doors = [
-        Rect(x=256, y=112, w=16, h=112, color=0)
+        Rect(x=256, y=112, w=16, h=112, color=0), 
 
     
     
+    ]
+
+moblins = [
+        Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 3),
+        Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
+        Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 3),
+        Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
+        Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
+        Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 3),
+        Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 3),
+        Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 3),
     ]
 
 dr1 = Rect(x = 256-TILESIZE, y = 112, w = 16, h = 112, color=7)
@@ -179,7 +192,30 @@ def updateArrowPosition(arrow):
         arrow.x -= TILESIZE
 
 
+def vector2D(x1, y1, x2, y2):
+    dx = x2 - x1
+    dy = y2 - y1
+    mag = math.sqrt(dx**2 + dy**2)
+    if mag == 0:
+        return (0, 0)
+    dxn = dx/mag
+    if dxn >= 0:
+        dxn = math.ceil(dxn)
+    else:
+        dxn = math.floor(dxn)
+    dyn = dy/mag
+    if dyn >= 0:
+        dyn = math.ceil(dyn)
+    else:
+        dyn = math.floor(dyn)
+    return (dxn, dyn)
 
+def debugVector2D():
+    x1 = (pyxel.mouse_x // TILESIZE) * TILESIZE
+    y1 = (pyxel.mouse_y // TILESIZE) * TILESIZE
+    x2 = updatedplayer.x
+    y2 = updatedplayer.y
+    print(vector2D(x1, y1, x2, y2))
 
 def update():
     updateWeaponPosition(slash_sword)
@@ -242,11 +278,36 @@ def update():
         updatedplayer.slashing = False
     if bow not in updatedplayer.inventory and quiver not in updatedplayer.inventory:
         updatedplayer.shooting = False
-    if slash_sword.x == dummy.x and slash_sword.y == dummy.y and updatedplayer.slashing == True:
-        dummy.health -= 1
-    if arrow.x == dummy.x and arrow.y == dummy.y:
-        dummy.health -= 1
+    for moblin in moblins:
+        if random.random() < 0.05:
+            stepX, stepY = vector2D(moblin.x, moblin.y, updatedplayer.x, updatedplayer.y)
+            moblin.x += stepX*TILESIZE
+            moblin.y += stepY*TILESIZE
+        if slash_sword.x == moblin.x and slash_sword.y == moblin.y and updatedplayer.slashing == True:
+            moblin.health -= 1
+        if arrow.x == moblin.x and arrow.y == moblin.y:
+            moblin.health -= 1
+            updatedplayer.arrow_frame = 0
+        if updatedplayer.x == moblin.x and updatedplayer.y == moblin.y: # and random.random() < 0.1:
+            updatedplayer.health -= 1
+        if moblin.health <= 0:
+           moblin.x = -70
+           moblin.y = -70
+    if random.random() < 0.05:
+            stepX, stepY = vector2D(Gannondorf.x, Gannondorf.y, updatedplayer.x, updatedplayer.y)
+            Gannondorf.x += stepX*TILESIZE
+            Gannondorf.y += stepY*TILESIZE    
+    if slash_sword.x >= Gannondorf.x and slash_sword.x < Gannondorf.x + TILESIZE*2 and slash_sword.y >= Gannondorf.y and slash_sword.y < Gannondorf.y + TILESIZE*2 and updatedplayer.slashing == True:
+        Gannondorf.health -= 1
+    if arrow.x >= Gannondorf.x and arrow.x < Gannondorf.x + TILESIZE*2 and arrow.y >= Gannondorf.y and arrow.y < Gannondorf.y + TILESIZE*2:
+        Gannondorf.health -= 1
         updatedplayer.arrow_frame = 0
+    if updatedplayer.x >= Gannondorf.x and updatedplayer.x < Gannondorf.x + TILESIZE*2 and updatedplayer.y >= Gannondorf.y and updatedplayer.y < Gannondorf.y + TILESIZE*2: # and random.random() < 0.1:
+        updatedplayer.health -= 2
+    if Gannondorf.health <= 0:
+       Gannondorf.x = -70
+       Gannondorf.y = -70
+        
     if closed_chest.x == updatedplayer.x and closed_chest.y == updatedplayer.y:
         updatedplayer.inventory.append(key)
         closed_chest.x = -53
@@ -259,7 +320,8 @@ def update():
         if door.color == 0 and key in updatedplayer.inventory and updatedplayer.x >= dr1.x and updatedplayer.x < dr1.x+dr1.w and updatedplayer.y >= dr1.y and updatedplayer.y < dr1.y+dr1.h:
             door.x = -1000000
             door.x = -1000000
-        
+    
+
         
 def draw():
     pyxel.cls(5)
@@ -269,7 +331,7 @@ def draw():
         pyxel.rect(wall.x, wall.y, wall.w, wall.h, wall.color)
     #debug_rect = getDebugRect()
     for i in range(updatedplayer.health):        
-        pyxel.blt(heart.x - (i * TILESIZE * 2), heart.y, 0, heart.tile_x, heart.tile_y, TILESIZE, TILESIZE, 7)
+        pyxel.blt(heart.x + (i * TILESIZE * 2), heart.y, 0, heart.tile_x, heart.tile_y, TILESIZE, TILESIZE, 7)
             
     pyxel.blt(sword.x, sword.y, 0, sword.tile_x, sword.tile_y, TILESIZE, TILESIZE, 14)
     pyxel.blt(bow.x, bow.y, 0, bow.tile_x, bow.tile_y, TILESIZE, TILESIZE, 14)
@@ -277,10 +339,10 @@ def draw():
     pyxel.blt(closed_chest.x, closed_chest.y, 0, closed_chest.tile_x, closed_chest.tile_y, TILESIZE, TILESIZE)
     pyxel.blt(open_chest.x, open_chest.y, 0, open_chest.tile_x, open_chest.tile_y, TILESIZE, TILESIZE)
     pyxel.blt(key.x, key.y, 0, key.tile_x, key.tile_y, TILESIZE, TILESIZE, 7)
-    pyxel.blt(dummy.x, dummy.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
-    if dummy.health <= 0:
-       dummy.x = -70
-       dummy.y = -70
+    pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 80, 2*TILESIZE, 2*TILESIZE, 14)
+    for moblin in moblins:
+        pyxel.blt(moblin.x, moblin.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
+        
     #pyxel.rect(debug_rect.x, debug_rect.y, debug_rect.w, debug_rect.h, debug_rect.color)
     if updatedplayer.direction == 'down':
         pyxel.blt(updatedplayer.x, updatedplayer.y, 0, 0, 0, 16, 16, 7)
@@ -317,8 +379,7 @@ def draw():
 
     pyxel.rect(secretdoor1.x, secretdoor1.y, secretdoor1.w, secretdoor1.h, WALLCOLOR)
     pyxel.rect(secretdoor2.x, secretdoor2.y, secretdoor2.w, secretdoor2.h, WALLCOLOR)
+    
 
-    #if pyxel.btnp(pyxel.KEY_R):
-        #print(absolute_to_tilesize(debug_rect))
 
 pyxel.run(update, draw)

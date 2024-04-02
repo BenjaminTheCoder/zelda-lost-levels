@@ -111,7 +111,10 @@ walls = [
     ]
 
 doors = [
-        Rect(x=256, y=112, w=16, h=112, color=0), 
+        Rect(x=256, y=112, w=16, h=112, color=0),
+        Rect(x=128, y=256, w=32, h=16, color=13),
+        Rect(x=256, y=368, w=16, h=64, color=13),
+        Rect(x=512, y=144, w=16, h=80, color=13)
 
     
     
@@ -129,6 +132,9 @@ moblins = [
     ]
 
 dr1 = Rect(x = 256-TILESIZE, y = 112, w = 16, h = 112, color=7)
+dr2 = Rect(x=128, y=256 - TILESIZE, w=32, h=16, color=13)
+dr3 = Rect(x=256 - TILESIZE, y=368, w=16, h=64, color=13)
+dr4 = Rect(x=512, y=144, w=16, h=80, color=13)
 
 def canYouGoThere(nextX, nextY):
     canGo = True
@@ -225,8 +231,8 @@ def update():
     updatedplayer.shooting = False
     if pyxel.btnp(pyxel.KEY_Q):
         pyxel.quit()
-    #elif pyxel.btnp(pyxel.KEY_P):
-        #print(getDebugRect())
+    elif pyxel.btnp(pyxel.KEY_P):
+        print(getDebugRect())
     elif pyxel.btnp(pyxel.KEY_SPACE):
         updatedplayer.slashing = True
     elif pyxel.btnp(pyxel.KEY_B):
@@ -279,10 +285,12 @@ def update():
     if bow not in updatedplayer.inventory and quiver not in updatedplayer.inventory:
         updatedplayer.shooting = False
     for moblin in moblins:
-        if random.random() < 0.05:
-            stepX, stepY = vector2D(moblin.x, moblin.y, updatedplayer.x, updatedplayer.y)
-            moblin.x += stepX*TILESIZE
-            moblin.y += stepY*TILESIZE
+        if random.random() < 0.1:
+            stepX, stepY = vector2D(moblin.x, moblin.y, updatedplayer.x, updatedplayer.y)            
+            canGo = canYouGoThere(moblin.x + stepX * TILESIZE, moblin.y + stepY * TILESIZE)
+            if canGo:
+                moblin.x += stepX*TILESIZE
+                moblin.y += stepY*TILESIZE
         if slash_sword.x == moblin.x and slash_sword.y == moblin.y and updatedplayer.slashing == True:
             moblin.health -= 1
         if arrow.x == moblin.x and arrow.y == moblin.y:
@@ -293,10 +301,15 @@ def update():
         if moblin.health <= 0:
            moblin.x = -70
            moblin.y = -70
-    if random.random() < 0.05:
-            stepX, stepY = vector2D(Gannondorf.x, Gannondorf.y, updatedplayer.x, updatedplayer.y)
+           
+    if random.random() < 0.1:
+        stepX, stepY = vector2D(Gannondorf.x, Gannondorf.y, updatedplayer.x, updatedplayer.y)
+        canGo1 = canYouGoThere(Gannondorf.x + stepX * TILESIZE, Gannondorf.y + stepY * TILESIZE)
+        canGo2 = canYouGoThere((Gannondorf.x + stepX * TILESIZE) + TILESIZE, (Gannondorf.y + stepY * TILESIZE) + TILESIZE)
+        if canGo1 and canGo2:
             Gannondorf.x += stepX*TILESIZE
-            Gannondorf.y += stepY*TILESIZE    
+            Gannondorf.y += stepY*TILESIZE
+        
     if slash_sword.x >= Gannondorf.x and slash_sword.x < Gannondorf.x + TILESIZE*2 and slash_sword.y >= Gannondorf.y and slash_sword.y < Gannondorf.y + TILESIZE*2 and updatedplayer.slashing == True:
         Gannondorf.health -= 1
     if arrow.x >= Gannondorf.x and arrow.x < Gannondorf.x + TILESIZE*2 and arrow.y >= Gannondorf.y and arrow.y < Gannondorf.y + TILESIZE*2:
@@ -329,7 +342,7 @@ def draw():
         pyxel.rect(door.x, door.y, door.w, door.h, door.color)    
     for wall in walls:
         pyxel.rect(wall.x, wall.y, wall.w, wall.h, wall.color)
-    #debug_rect = getDebugRect()
+    debug_rect = getDebugRect()
     for i in range(updatedplayer.health):        
         pyxel.blt(heart.x + (i * TILESIZE * 2), heart.y, 0, heart.tile_x, heart.tile_y, TILESIZE, TILESIZE, 7)
             
@@ -343,7 +356,7 @@ def draw():
     for moblin in moblins:
         pyxel.blt(moblin.x, moblin.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
         
-    #pyxel.rect(debug_rect.x, debug_rect.y, debug_rect.w, debug_rect.h, debug_rect.color)
+    pyxel.rect(debug_rect.x, debug_rect.y, debug_rect.w, debug_rect.h, debug_rect.color)
     if updatedplayer.direction == 'down':
         pyxel.blt(updatedplayer.x, updatedplayer.y, 0, 0, 0, 16, 16, 7)
     elif updatedplayer.direction == 'up':

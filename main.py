@@ -72,11 +72,12 @@ class Player(Agent):
     health: int
     
 heart = Item(x = 27 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
-updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 100)
+updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
 sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
 slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
 shoot_bow =   ItemWithDirection(x = -20*TILESIZE, y = -20*TILESIZE, tile_x_down = 16, tile_y_down = 64, tile_x_up = 0,  tile_y_up = 64,tile_x_left = 32, tile_y_left = 64, tile_x_right = 48, tile_y_right = 64, alpha = 14)
 arrow = ItemWithDirection(x = -30*TILESIZE, y = -30*TILESIZE, tile_x_down = 16, tile_y_down = 48, tile_x_up = 0,  tile_y_up = 48,tile_x_left = 32, tile_y_left = 48, tile_x_right = 48, tile_y_right = 48, alpha = 7)
+Din = Item(x=640, y=80, name = 'Zelda', tile_x = 0, tile_y = 112)
 bow = Item(x = 26*TILESIZE, y = 19*TILESIZE, name = 'Bow', tile_x = 32, tile_y = 0)
 quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , tile_y = 0)
 open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
@@ -112,9 +113,9 @@ walls = [
 
 doors = [
         Rect(x=256, y=112, w=16, h=112, color=0),
-        Rect(x=128, y=256, w=32, h=16, color=13),
+        Rect(x=128, y=256, w=32, h=16, color=4),
         Rect(x=256, y=368, w=16, h=64, color=13),
-        Rect(x=512, y=144, w=16, h=80, color=13)
+        Rect(x=512, y=144, w=16, h=80, color=7)
 
     
     
@@ -132,9 +133,9 @@ moblins = [
     ]
 
 dr1 = Rect(x = 256-TILESIZE, y = 112, w = 16, h = 112, color=7)
-dr2 = Rect(x=128, y=256 - TILESIZE, w=32, h=16, color=13)
+dr2 = Rect(x=128, y=256 - TILESIZE, w=32, h=16, color=4)
 dr3 = Rect(x=256 - TILESIZE, y=368, w=16, h=64, color=13)
-dr4 = Rect(x=512, y=144, w=16, h=80, color=13)
+dr4 = Rect(x=496, y=144, w=16, h=80, color=7)
 
 def canYouGoThere(nextX, nextY):
     canGo = True
@@ -231,8 +232,8 @@ def update():
     updatedplayer.shooting = False
     if pyxel.btnp(pyxel.KEY_Q):
         pyxel.quit()
-    elif pyxel.btnp(pyxel.KEY_P):
-        print(getDebugRect())
+    #elif pyxel.btnp(pyxel.KEY_P):
+        #print(getDebugRect())
     elif pyxel.btnp(pyxel.KEY_SPACE):
         updatedplayer.slashing = True
     elif pyxel.btnp(pyxel.KEY_B):
@@ -285,7 +286,7 @@ def update():
     if bow not in updatedplayer.inventory and quiver not in updatedplayer.inventory:
         updatedplayer.shooting = False
     for moblin in moblins:
-        if random.random() < 0.1:
+        if random.random() < 0.05:
             stepX, stepY = vector2D(moblin.x, moblin.y, updatedplayer.x, updatedplayer.y)            
             canGo = canYouGoThere(moblin.x + stepX * TILESIZE, moblin.y + stepY * TILESIZE)
             if canGo:
@@ -296,13 +297,13 @@ def update():
         if arrow.x == moblin.x and arrow.y == moblin.y:
             moblin.health -= 1
             updatedplayer.arrow_frame = 0
-        if updatedplayer.x == moblin.x and updatedplayer.y == moblin.y: # and random.random() < 0.1:
+        if updatedplayer.x == moblin.x and updatedplayer.y == moblin.y and random.random() < 0.1:
             updatedplayer.health -= 1
         if moblin.health <= 0:
            moblin.x = -70
            moblin.y = -70
            
-    if random.random() < 0.1:
+    if random.random() < 0.05:
         stepX, stepY = vector2D(Gannondorf.x, Gannondorf.y, updatedplayer.x, updatedplayer.y)
         canGo1 = canYouGoThere(Gannondorf.x + stepX * TILESIZE, Gannondorf.y + stepY * TILESIZE)
         canGo2 = canYouGoThere((Gannondorf.x + stepX * TILESIZE) + TILESIZE, (Gannondorf.y + stepY * TILESIZE) + TILESIZE)
@@ -315,7 +316,7 @@ def update():
     if arrow.x >= Gannondorf.x and arrow.x < Gannondorf.x + TILESIZE*2 and arrow.y >= Gannondorf.y and arrow.y < Gannondorf.y + TILESIZE*2:
         Gannondorf.health -= 1
         updatedplayer.arrow_frame = 0
-    if updatedplayer.x >= Gannondorf.x and updatedplayer.x < Gannondorf.x + TILESIZE*2 and updatedplayer.y >= Gannondorf.y and updatedplayer.y < Gannondorf.y + TILESIZE*2: # and random.random() < 0.1:
+    if updatedplayer.x >= Gannondorf.x and updatedplayer.x < Gannondorf.x + TILESIZE*2 and updatedplayer.y >= Gannondorf.y and updatedplayer.y < Gannondorf.y + TILESIZE*2 and random.random() < 0.1:
         updatedplayer.health -= 2
     if Gannondorf.health <= 0:
        Gannondorf.x = -70
@@ -333,8 +334,16 @@ def update():
         if door.color == 0 and key in updatedplayer.inventory and updatedplayer.x >= dr1.x and updatedplayer.x < dr1.x+dr1.w and updatedplayer.y >= dr1.y and updatedplayer.y < dr1.y+dr1.h:
             door.x = -1000000
             door.x = -1000000
-    
-
+        if door.color == 4 and updatedplayer.x >= dr2.x and updatedplayer.x < dr2.x+dr2.w and updatedplayer.y >= dr2.y and updatedplayer.y < dr2.y+dr2.h:
+            door.x = -1000000
+            door.x = -1000000
+        if door.color == 13 and updatedplayer.x >= dr3.x and updatedplayer.x < dr3.x+dr3.w and updatedplayer.y >= dr3.y and updatedplayer.y < dr3.y+dr3.h:
+            door.x = -1000000
+            door.x = -1000000
+        if door.color == 7 and updatedplayer.x >= dr4.x and updatedplayer.x < dr4.x+dr4.w and updatedplayer.y >= dr4.y and updatedplayer.y < dr4.y+dr4.h:
+            door.x = -1000000
+            door.x = -1000000
+            
         
 def draw():
     pyxel.cls(5)
@@ -342,7 +351,7 @@ def draw():
         pyxel.rect(door.x, door.y, door.w, door.h, door.color)    
     for wall in walls:
         pyxel.rect(wall.x, wall.y, wall.w, wall.h, wall.color)
-    debug_rect = getDebugRect()
+    #debug_rect = getDebugRect()
     for i in range(updatedplayer.health):        
         pyxel.blt(heart.x + (i * TILESIZE * 2), heart.y, 0, heart.tile_x, heart.tile_y, TILESIZE, TILESIZE, 7)
             
@@ -353,10 +362,12 @@ def draw():
     pyxel.blt(open_chest.x, open_chest.y, 0, open_chest.tile_x, open_chest.tile_y, TILESIZE, TILESIZE)
     pyxel.blt(key.x, key.y, 0, key.tile_x, key.tile_y, TILESIZE, TILESIZE, 7)
     pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 80, 2*TILESIZE, 2*TILESIZE, 14)
+    pyxel.blt(Din.x, Din.y, 0, Din.tile_x, Din.tile_y, TILESIZE, TILESIZE, 14)
+
     for moblin in moblins:
-        pyxel.blt(moblin.x, moblin.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
+        pyxel.blt(moblin.x, moblin.y, 0, 32, 80, TILESIZE, TILESIZE, 14)
         
-    pyxel.rect(debug_rect.x, debug_rect.y, debug_rect.w, debug_rect.h, debug_rect.color)
+    #pyxel.rect(debug_rect.x, debug_rect.y, debug_rect.w, debug_rect.h, debug_rect.color)
     if updatedplayer.direction == 'down':
         pyxel.blt(updatedplayer.x, updatedplayer.y, 0, 0, 0, 16, 16, 7)
     elif updatedplayer.direction == 'up':

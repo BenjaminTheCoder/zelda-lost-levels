@@ -72,19 +72,20 @@ class Player(Agent):
     health: int
     
 game_over = False
+win = False
 heart = Item(x = 27 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
 updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
 sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
 slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
 shoot_bow =   ItemWithDirection(x = -20*TILESIZE, y = -20*TILESIZE, tile_x_down = 16, tile_y_down = 64, tile_x_up = 0,  tile_y_up = 64,tile_x_left = 32, tile_y_left = 64, tile_x_right = 48, tile_y_right = 64, alpha = 14)
 arrow = ItemWithDirection(x = -30*TILESIZE, y = -30*TILESIZE, tile_x_down = 16, tile_y_down = 48, tile_x_up = 0,  tile_y_up = 48,tile_x_left = 32, tile_y_left = 48, tile_x_right = 48, tile_y_right = 48, alpha = 7)
-Din = Item(x=640, y=80, name = 'Zelda', tile_x = 0, tile_y = 112)
+Nadra = Item(x=640, y=80, name = 'Zelda', tile_x = 0, tile_y = 112)
 bow = Item(x = 26*TILESIZE, y = 19*TILESIZE, name = 'Bow', tile_x = 32, tile_y = 0)
 quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , tile_y = 0)
 open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
 closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
 key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
-Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 20)
+Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 40)
 secretdoor1 = Rect(x = 23*TILESIZE, y = 27*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 walls = [
@@ -120,17 +121,17 @@ doors = [
     ]
 
 Room1Moblins = [
-        Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 5),
-        Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 5),
-        Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 5),
-        Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 5),
-        Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 5),
+        Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 3),
+        Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
+        Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 3),
+        Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
+        Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
     ]
 
 SecretRoomMoblins = [        
-        Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 5),
-        Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 5),
-        Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 5),
+        Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 3),
+        Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 3),
+        Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 3),
     ]
 
 
@@ -143,21 +144,22 @@ dr4 = Rect(x=496, y=144, w=16, h=80, color=7)
 def reset_game():
     global game_over, heart, updatedplayer, sword, slash_sword, shoot_bow, arrow, Din, bow, quiver
     global open_chest, closed_chest, key, Gannondorf, secretdoor1, secretdoor2, walls, doors
-    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4
+    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win
     game_over = False
+    win = False
     heart = Item(x = 27 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
     updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
     sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
     slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
     shoot_bow =   ItemWithDirection(x = -20*TILESIZE, y = -20*TILESIZE, tile_x_down = 16, tile_y_down = 64, tile_x_up = 0,  tile_y_up = 64,tile_x_left = 32, tile_y_left = 64, tile_x_right = 48, tile_y_right = 64, alpha = 14)
     arrow = ItemWithDirection(x = -30*TILESIZE, y = -30*TILESIZE, tile_x_down = 16, tile_y_down = 48, tile_x_up = 0,  tile_y_up = 48,tile_x_left = 32, tile_y_left = 48, tile_x_right = 48, tile_y_right = 48, alpha = 7)
-    Din = Item(x=640, y=80, name = 'Zelda', tile_x = 0, tile_y = 112)
+    Nadra = Item(x=640, y=80, name = 'Zelda', tile_x = 0, tile_y = 112)
     bow = Item(x = 26*TILESIZE, y = 19*TILESIZE, name = 'Bow', tile_x = 32, tile_y = 0)
     quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , tile_y = 0)
     open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
     closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
     key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
-    Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 20)
+    Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 40)
     secretdoor1 = Rect(x = 23*TILESIZE, y = 27*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
     secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
     walls = [
@@ -193,17 +195,17 @@ def reset_game():
         ]
 
     Room1Moblins = [
-            Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 5),
-            Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 5),
-            Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 5),
-            Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 5),
-            Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 5),
+            Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 3),
+            Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
+            Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 3),
+            Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
+            Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
         ]
 
     SecretRoomMoblins = [        
-            Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 5),
-            Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 5),
-            Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 5),
+            Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 3),
+            Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 3),
+            Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 3),
         ]
 
 
@@ -313,6 +315,8 @@ def debugVector2D():
 
 def update():
     global game_over
+    global win
+#     print(pyxel.mouse_x, pyxel.mouse_y)
     updateWeaponPosition(slash_sword)
     updateWeaponPosition(shoot_bow)
     updateArrowPosition(arrow)
@@ -453,11 +457,13 @@ def update():
                 door.x = -1000000
                 door.x = -1000000
 
-    if pyxel.btnp(pyxel.KEY_R, repeat=1) and game_over == True:
+    if pyxel.btnp(pyxel.KEY_R, repeat=1) and (game_over == True or win == True) :
         reset_game()
             
     if updatedplayer.health <= 0:
         game_over = True
+    if Nadra.x == updatedplayer.x and Nadra.y == updatedplayer.y:
+        win = True
         
 
 def draw():
@@ -465,6 +471,12 @@ def draw():
         pyxel.cls(0)
         pyxel.blt(255, 255, 2, 0, 0, 255, 31)
         pyxel.text(350, 300, "PRESS R TO RESTART", 8)
+        
+    elif win == True:
+        pyxel.cls(0)
+        pyxel.blt(369, 248, 2, 16, 80, 16, 32)
+        pyxel.text(367, 300, "YOU WIN!", 11)
+        pyxel.text(350, 325, "PRESS R TO RESTART", 11)
         
     else:
         pyxel.cls(5)
@@ -483,8 +495,8 @@ def draw():
                 pyxel.blt(closed_chest.x, closed_chest.y, 0, closed_chest.tile_x, closed_chest.tile_y, TILESIZE, TILESIZE)
                 pyxel.blt(open_chest.x, open_chest.y, 0, open_chest.tile_x, open_chest.tile_y, TILESIZE, TILESIZE)
                 pyxel.blt(key.x, key.y, 0, key.tile_x, key.tile_y, TILESIZE, TILESIZE, 7)
-                pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 80, 2*TILESIZE, 2*TILESIZE, 14)
-                pyxel.blt(Din.x, Din.y, 0, Din.tile_x, Din.tile_y, TILESIZE, TILESIZE, 14)
+                pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 128, 2*TILESIZE, 2*TILESIZE, 14)
+                pyxel.blt(Nadra.x, Nadra.y, 0, Nadra.tile_x, Nadra.tile_y, TILESIZE, TILESIZE, 14)
                 pyxel.blt(moblin1.x, moblin1.y, 0, 32, 80, TILESIZE, TILESIZE, 14)
                 pyxel.blt(moblin2.x, moblin2.y, 0, 32, 80, TILESIZE, TILESIZE, 14)
 

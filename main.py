@@ -223,6 +223,11 @@ def Are_room_1_Moblins_dead(Room1Moblins):
     else:
         return False
 
+def Is_Gannon_dead():
+    if Gannondorf.health == 0:
+        return True
+    else:
+        return False
 
 def canYouGoThere(nextX, nextY):
     canGo = True
@@ -451,7 +456,7 @@ def update():
             if door.color == 13 and updatedplayer.x >= dr3.x and updatedplayer.x < dr3.x+dr3.w and updatedplayer.y >= dr3.y and updatedplayer.y < dr3.y+dr3.h and Are_room_1_Moblins_dead(Room1Moblins) == True:
                 door.x = -1000000
                 door.x = -1000000
-            if door.color == 7 and updatedplayer.x >= dr4.x and updatedplayer.x < dr4.x+dr4.w and updatedplayer.y >= dr4.y and updatedplayer.y < dr4.y+dr4.h:
+            if door.color == 7 and updatedplayer.x >= dr4.x and updatedplayer.x < dr4.x+dr4.w and updatedplayer.y >= dr4.y and updatedplayer.y < dr4.y+dr4.h and Is_Gannon_dead() == True:
                 door.x = -1000000
                 door.x = -1000000
 
@@ -467,14 +472,14 @@ def update():
 def draw():
     if game_over == True:
         pyxel.cls(0)
-        pyxel.blt(255, 255, 2, 0, 0, 255, 31)
-        pyxel.text(350, 300, "PRESS R TO RESTART", 8)
+        pyxel.blt(255, 255 - 80, 2, 0, 0, 255, 31)
+        pyxel.text(350, 300 - 80, "PRESS R TO RESTART", 8)
         
     elif win == True:
         pyxel.cls(0)
-        pyxel.blt(369, 248, 2, 16, 80, 16, 32)
-        pyxel.text(367, 300, "YOU WIN!", 11)
-        pyxel.text(350, 325, "PRESS R TO RESTART", 11)
+        pyxel.blt(369, 248 - 80, 2, 16, 80, 16, 32)
+        pyxel.text(367, 300 - 80, "YOU WIN!", 11)
+        pyxel.text(350, 325 - 80, "PRESS R TO RESTART", 11)
         
     else:
         pyxel.cls(5)

@@ -7,11 +7,11 @@ import math
 
 TILESIZE = 16
 SCREEN_WIDTH = 50*TILESIZE
-SCREEN_HEIGHT = 40*TILESIZE
+SCREEN_HEIGHT = 30*TILESIZE
 WALLCOLOR = 3
 MAX_ARROW_FRAMES = 10
 
-pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=1)
+pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=2)
 pyxel.load('assets.pyxres')
 pyxel.mouse(True)
 
@@ -73,7 +73,7 @@ class Player(Agent):
     
 game_over = False
 win = False
-heart = Item(x = 27 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
+heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
 updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
 sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
 slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
@@ -86,24 +86,23 @@ open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_
 closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
 key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
 Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 40)
-secretdoor1 = Rect(x = 23*TILESIZE, y = 27*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
+secretdoor1 = Rect(x = 23*TILESIZE, y = 25*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 walls = [
         Rect(x = 0*TILESIZE, y = 0*TILESIZE, w = 2*TILESIZE, h = 60*TILESIZE, color=WALLCOLOR),
         Rect(x = 0*TILESIZE, y = 0*TILESIZE, w = 80*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
-        Rect(x = 0, y = 30*TILESIZE, w = 80*TILESIZE, h = 10*TILESIZE, color=WALLCOLOR), #bottom
+        Rect(x = 0, y = 27*TILESIZE, w = 80*TILESIZE, h = 10*TILESIZE, color=WALLCOLOR), #bottom
         Rect(x = 48*TILESIZE, y = 0*TILESIZE, w = 2*TILESIZE, h = 60*TILESIZE, color=WALLCOLOR), # right
         Rect(x = 16*TILESIZE, y = 0*TILESIZE, w = TILESIZE, h = 7*TILESIZE, color=WALLCOLOR), # done
         Rect(x = 0, y = 16*TILESIZE, w = 8*TILESIZE, h = TILESIZE, color=WALLCOLOR),
         Rect(x = 10*TILESIZE, y = 16*TILESIZE, w = 6*TILESIZE, h = TILESIZE, color=WALLCOLOR),
         Rect(x = 16*TILESIZE, y = 17*TILESIZE, w = 7*TILESIZE, h = 6*TILESIZE, color=WALLCOLOR),
-        Rect(x = 16*TILESIZE, y = 27*TILESIZE, w = 7*TILESIZE, h = 4*TILESIZE, color=WALLCOLOR),
+        Rect(x = 16*TILESIZE, y = 25*TILESIZE, w = 7*TILESIZE, h = 4*TILESIZE, color=WALLCOLOR),
         Rect(x = 16*TILESIZE, y = 16*TILESIZE, w = 17*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 17*TILESIZE, y = 2*TILESIZE, w = 16*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 32*TILESIZE, y = 2*TILESIZE, w = 1*TILESIZE, h = 7*TILESIZE, color=WALLCOLOR),
-        Rect(x = 2*TILESIZE, y = 30*TILESIZE, w = 14*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
-        Rect(x = 24*TILESIZE, y = 27*TILESIZE, w = 9*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
-        Rect(x = 32*TILESIZE, y = 17*TILESIZE, w = 1*TILESIZE, h = 11*TILESIZE, color=WALLCOLOR),
+        Rect(x = 24*TILESIZE, y = 25*TILESIZE, w = 9*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
+        Rect(x = 32*TILESIZE, y = 17*TILESIZE, w = 1*TILESIZE, h = 9*TILESIZE, color=WALLCOLOR),
         Rect(x = 32*TILESIZE, y = 16*TILESIZE, w = 15*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 16*TILESIZE, y = 14*TILESIZE, w = 1*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
         Rect(x = 32*TILESIZE, y = 14*TILESIZE, w = 1*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
@@ -111,19 +110,19 @@ walls = [
     ]
 
 doors = [
-        Rect(x=256, y=112, w=16, h=112, color=0),
-        Rect(x=128, y=256, w=32, h=16, color=4),
-        Rect(x=256, y=368, w=16, h=64, color=13),
-        Rect(x=512, y=144, w=16, h=80, color=7)
+        Rect(x=16*TILESIZE, y=7*TILESIZE, w=1*TILESIZE, h=7*TILESIZE, color=0),
+        Rect(x=8*TILESIZE, y=16*TILESIZE, w=2*TILESIZE, h=1*TILESIZE, color=4),
+        Rect(x=16*TILESIZE, y=23*TILESIZE, w=1*TILESIZE, h=2*TILESIZE, color=13),
+        Rect(x=32*TILESIZE, y=9*TILESIZE, w=1*TILESIZE, h=5*TILESIZE, color=7)
 
     
     
     ]
 
 Room1Moblins = [
-        Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 3),
+        Moblin(x = 5*TILESIZE, y = 25*TILESIZE, health = 3),
         Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
-        Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 3),
+        Moblin(x = 8*TILESIZE, y = 25*TILESIZE, health = 3),
         Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
         Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
     ]
@@ -147,7 +146,7 @@ def reset_game():
     global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win
     game_over = False
     win = False
-    heart = Item(x = 27 * TILESIZE, y = TILESIZE * 35, name = 'Heart', tile_x = 0, tile_y = 32)
+    heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
     updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
     sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
     slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
@@ -160,24 +159,23 @@ def reset_game():
     closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
     key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
     Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 40)
-    secretdoor1 = Rect(x = 23*TILESIZE, y = 27*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
+    secretdoor1 = Rect(x = 23*TILESIZE, y = 25*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
     secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
     walls = [
             Rect(x = 0*TILESIZE, y = 0*TILESIZE, w = 2*TILESIZE, h = 60*TILESIZE, color=WALLCOLOR),
             Rect(x = 0*TILESIZE, y = 0*TILESIZE, w = 80*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
-            Rect(x = 0, y = 30*TILESIZE, w = 80*TILESIZE, h = 10*TILESIZE, color=WALLCOLOR), #bottom
+            Rect(x = 0, y = 27*TILESIZE, w = 80*TILESIZE, h = 10*TILESIZE, color=WALLCOLOR), #bottom
             Rect(x = 48*TILESIZE, y = 0*TILESIZE, w = 2*TILESIZE, h = 60*TILESIZE, color=WALLCOLOR), # right
             Rect(x = 16*TILESIZE, y = 0*TILESIZE, w = TILESIZE, h = 7*TILESIZE, color=WALLCOLOR), # done
             Rect(x = 0, y = 16*TILESIZE, w = 8*TILESIZE, h = TILESIZE, color=WALLCOLOR),
             Rect(x = 10*TILESIZE, y = 16*TILESIZE, w = 6*TILESIZE, h = TILESIZE, color=WALLCOLOR),
             Rect(x = 16*TILESIZE, y = 17*TILESIZE, w = 7*TILESIZE, h = 6*TILESIZE, color=WALLCOLOR),
-            Rect(x = 16*TILESIZE, y = 27*TILESIZE, w = 7*TILESIZE, h = 4*TILESIZE, color=WALLCOLOR),
+            Rect(x = 16*TILESIZE, y = 25*TILESIZE, w = 7*TILESIZE, h = 4*TILESIZE, color=WALLCOLOR),
             Rect(x = 16*TILESIZE, y = 16*TILESIZE, w = 17*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
             Rect(x = 17*TILESIZE, y = 2*TILESIZE, w = 16*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
             Rect(x = 32*TILESIZE, y = 2*TILESIZE, w = 1*TILESIZE, h = 7*TILESIZE, color=WALLCOLOR),
-            Rect(x = 2*TILESIZE, y = 30*TILESIZE, w = 14*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
-            Rect(x = 24*TILESIZE, y = 27*TILESIZE, w = 9*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
-            Rect(x = 32*TILESIZE, y = 17*TILESIZE, w = 1*TILESIZE, h = 11*TILESIZE, color=WALLCOLOR),
+            Rect(x = 24*TILESIZE, y = 25*TILESIZE, w = 9*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
+            Rect(x = 32*TILESIZE, y = 17*TILESIZE, w = 1*TILESIZE, h = 9*TILESIZE, color=WALLCOLOR),
             Rect(x = 32*TILESIZE, y = 16*TILESIZE, w = 15*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
             Rect(x = 16*TILESIZE, y = 14*TILESIZE, w = 1*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
             Rect(x = 32*TILESIZE, y = 14*TILESIZE, w = 1*TILESIZE, h = 2*TILESIZE, color=WALLCOLOR),
@@ -185,19 +183,19 @@ def reset_game():
         ]
 
     doors = [
-            Rect(x=256, y=112, w=16, h=112, color=0),
-            Rect(x=128, y=256, w=32, h=16, color=4),
-            Rect(x=256, y=368, w=16, h=64, color=13),
-            Rect(x=512, y=144, w=16, h=80, color=7)
+            Rect(x=16*TILESIZE, y=7*TILESIZE, w=1*TILESIZE, h=7*TILESIZE, color=0),
+            Rect(x=8*TILESIZE, y=16*TILESIZE, w=2*TILESIZE, h=1*TILESIZE, color=4),
+            Rect(x=16*TILESIZE, y=23*TILESIZE, w=1*TILESIZE, h=2*TILESIZE, color=13),
+            Rect(x=32*TILESIZE, y=9*TILESIZE, w=1*TILESIZE, h=5*TILESIZE, color=7)
 
         
         
         ]
 
     Room1Moblins = [
-            Moblin(x = 5*TILESIZE, y = 26*TILESIZE, health = 3),
+            Moblin(x = 5*TILESIZE, y = 25*TILESIZE, health = 3),
             Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
-            Moblin(x = 8*TILESIZE, y = 27*TILESIZE, health = 3),
+            Moblin(x = 8*TILESIZE, y = 25*TILESIZE, health = 3),
             Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
             Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
         ]
@@ -316,7 +314,7 @@ def debugVector2D():
 def update():
     global game_over
     global win
-#     print(pyxel.mouse_x, pyxel.mouse_y)
+#     print(pyxel.mouse_x // TILESIZE, pyxel.mouse_y // TILESIZE)
     updateWeaponPosition(slash_sword)
     updateWeaponPosition(shoot_bow)
     updateArrowPosition(arrow)
@@ -362,17 +360,17 @@ def update():
     if updatedplayer.x == sword.x and updatedplayer.y == sword.y:
         updatedplayer.inventory.append(sword)
         sword.x = TILESIZE * 5
-        sword.y = TILESIZE * 35
+        sword.y = TILESIZE * 28
         #print(updatedplayer.inventory)
     elif updatedplayer.x == bow.x and updatedplayer.y == bow.y:
         updatedplayer.inventory.append(bow)
         bow.x = TILESIZE * 7
-        bow.y = TILESIZE * 35
+        bow.y = TILESIZE * 28
         # print(updatedplayer.inventory)
     elif updatedplayer.x == quiver.x and updatedplayer.y == quiver.y:
         updatedplayer.inventory.append(sword)
         quiver.x = TILESIZE * 9
-        quiver.y = TILESIZE * 35
+        quiver.y = TILESIZE * 28
     #print(updatedplayer.direction)    
     if sword not in updatedplayer.inventory:
         updatedplayer.slashing = False

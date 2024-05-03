@@ -15,6 +15,7 @@ pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=2)
 pyxel.load('assets.pyxres')
 pyxel.mouse(True)
 
+
 @dataclass
 class Rect:
     x: int
@@ -73,6 +74,7 @@ class Player(Agent):
     
 game_over = False
 win = False
+whichSoundIsPlaying = None
 heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
 updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
 sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
@@ -143,9 +145,10 @@ dr4 = Rect(x=496, y=144, w=16, h=80, color=7)
 def reset_game():
     global game_over, heart, updatedplayer, sword, slash_sword, shoot_bow, arrow, Din, bow, quiver
     global open_chest, closed_chest, key, Gannondorf, secretdoor1, secretdoor2, walls, doors
-    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win
+    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win, whichSoundIsPlaying
     game_over = False
     win = False
+    whichSoundIsPlaying = None
     heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
     updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
     sword = Item(x = 9*TILESIZE, y = 12*TILESIZE, name = 'Sword', tile_x = 16, tile_y = 0)
@@ -471,17 +474,20 @@ def update():
 
 def draw():
     if game_over == True:
+        play_sound("lose")
         pyxel.cls(0)
         pyxel.blt(255, 255 - 80, 2, 0, 0, 255, 31)
         pyxel.text(350, 300 - 80, "PRESS R TO RESTART", 8)
         
     elif win == True:
+        play_sound("win")
         pyxel.cls(0)
         pyxel.blt(369, 248 - 80, 2, 16, 80, 16, 32)
         pyxel.text(367, 300 - 80, "YOU WIN!", 11)
         pyxel.text(350, 325 - 80, "PRESS R TO RESTART", 11)
         
     else:
+        play_sound("game")
         pyxel.cls(5)
         for door in doors:
             pyxel.rect(door.x, door.y, door.w, door.h, door.color)    
@@ -539,5 +545,22 @@ def draw():
 
         pyxel.rect(secretdoor1.x, secretdoor1.y, secretdoor1.w, secretdoor1.h, WALLCOLOR)
         pyxel.rect(secretdoor2.x, secretdoor2.y, secretdoor2.w, secretdoor2.h, WALLCOLOR)        
+
+def play_sound(sound):
+    global whichSoundIsPlaying
+    if whichSoundIsPlaying != sound:
+        if sound == "game":
+            pyxel.play(0, 2, loop=True)
+#             whichSoundIsPlaying = "game"
+        elif sound == "lose":
+            pyxel.play(0, 8)
+#             whichSoundIsPlaying = "lose"
+        elif sound == "win":
+            pyxel.play(0, 9)
+#             whichSoundIsPlaying = "win"
+        elif sound == None:
+            pyxel.stop()
+#             whichSoundIsPlaying = None
+        whichSoundIsPlaying = sound
 
 pyxel.run(update, draw)

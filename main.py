@@ -10,6 +10,8 @@ SCREEN_WIDTH = 50*TILESIZE
 SCREEN_HEIGHT = 30*TILESIZE
 WALLCOLOR = 3
 MAX_ARROW_FRAMES = 10
+MOBLIN_HEALTH = 3
+GANNONDORF_HEALTH = 50
 
 pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=2)
 pyxel.load('assets.pyxres')
@@ -74,6 +76,7 @@ class Player(Agent):
     
 game_over = False
 win = False
+boss_battle = False
 whichSoundIsPlaying = None
 heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
 updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
@@ -87,7 +90,7 @@ quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , t
 open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
 closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
 key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
-Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 40)
+Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = GANNONDORF_HEALTH)
 secretdoor1 = Rect(x = 23*TILESIZE, y = 25*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
 walls = [
@@ -98,7 +101,7 @@ walls = [
         Rect(x = 16*TILESIZE, y = 0*TILESIZE, w = TILESIZE, h = 7*TILESIZE, color=WALLCOLOR), # done
         Rect(x = 0, y = 16*TILESIZE, w = 8*TILESIZE, h = TILESIZE, color=WALLCOLOR),
         Rect(x = 10*TILESIZE, y = 16*TILESIZE, w = 6*TILESIZE, h = TILESIZE, color=WALLCOLOR),
-        Rect(x = 16*TILESIZE, y = 17*TILESIZE, w = 7*TILESIZE, h = 6*TILESIZE, color=WALLCOLOR),
+        Rect(x = 16*TILESIZE, y = 17*TILESIZE, w = 7*TILESIZE, h = 5*TILESIZE, color=WALLCOLOR),
         Rect(x = 16*TILESIZE, y = 25*TILESIZE, w = 7*TILESIZE, h = 4*TILESIZE, color=WALLCOLOR),
         Rect(x = 16*TILESIZE, y = 16*TILESIZE, w = 17*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
         Rect(x = 17*TILESIZE, y = 2*TILESIZE, w = 16*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
@@ -114,7 +117,7 @@ walls = [
 doors = [
         Rect(x=16*TILESIZE, y=7*TILESIZE, w=1*TILESIZE, h=7*TILESIZE, color=0),
         Rect(x=8*TILESIZE, y=16*TILESIZE, w=2*TILESIZE, h=1*TILESIZE, color=4),
-        Rect(x=16*TILESIZE, y=23*TILESIZE, w=1*TILESIZE, h=2*TILESIZE, color=13),
+        Rect(x=16*TILESIZE, y=22*TILESIZE, w=1*TILESIZE, h=3*TILESIZE, color=13),
         Rect(x=32*TILESIZE, y=9*TILESIZE, w=1*TILESIZE, h=5*TILESIZE, color=7)
 
     
@@ -122,32 +125,33 @@ doors = [
     ]
 
 Room1Moblins = [
-        Moblin(x = 5*TILESIZE, y = 25*TILESIZE, health = 3),
-        Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
-        Moblin(x = 8*TILESIZE, y = 25*TILESIZE, health = 3),
-        Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
-        Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
+        Moblin(x = 5*TILESIZE, y = 25*TILESIZE, health = MOBLIN_HEALTH),
+        Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = MOBLIN_HEALTH),
+        Moblin(x = 8*TILESIZE, y = 25*TILESIZE, health = MOBLIN_HEALTH),
+        Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = MOBLIN_HEALTH),
+        Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = MOBLIN_HEALTH),
     ]
 
 SecretRoomMoblins = [        
-        Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 3),
-        Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 3),
-        Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 3),
+        Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = MOBLIN_HEALTH),
+        Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = MOBLIN_HEALTH),
+        Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = MOBLIN_HEALTH),
     ]
 
 
 dr1 = Rect(x = 256-TILESIZE, y = 112, w = 16, h = 112, color=7)
 dr2 = Rect(x=128, y=256 - TILESIZE, w=32, h=16, color=4)
-dr3 = Rect(x=256 - TILESIZE, y=368, w=16, h=64, color=13)
+dr3 = Rect(x=256 - TILESIZE, y=368 - TILESIZE, w=16, h=64, color=13)
 dr4 = Rect(x=496, y=144, w=16, h=80, color=7)
 
 
 def reset_game():
     global game_over, heart, updatedplayer, sword, slash_sword, shoot_bow, arrow, Din, bow, quiver
     global open_chest, closed_chest, key, Gannondorf, secretdoor1, secretdoor2, walls, doors
-    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win, whichSoundIsPlaying
+    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win, boss_battle, whichSoundIsPlaying
     game_over = False
     win = False
+    boss_battle = False
     whichSoundIsPlaying = None
     heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
     updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
@@ -161,7 +165,7 @@ def reset_game():
     open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
     closed_chest = Item(x = 24*TILESIZE, y = 19*TILESIZE, name = 'Closed_chest', tile_x = 32, tile_y = 96)
     key = Item(x = -52*TILESIZE, y = -52*TILESIZE, name = 'Key', tile_x = 48, tile_y = 96)
-    Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = 40)
+    Gannondorf = Moblin(x = 24*TILESIZE, y = 10*TILESIZE, health = GANNONDORF_HEALTH)
     secretdoor1 = Rect(x = 23*TILESIZE, y = 25*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
     secretdoor2 = Rect(x = 47*TILESIZE, y = 16*TILESIZE, w = 1*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR)
     walls = [
@@ -172,7 +176,7 @@ def reset_game():
             Rect(x = 16*TILESIZE, y = 0*TILESIZE, w = TILESIZE, h = 7*TILESIZE, color=WALLCOLOR), # done
             Rect(x = 0, y = 16*TILESIZE, w = 8*TILESIZE, h = TILESIZE, color=WALLCOLOR),
             Rect(x = 10*TILESIZE, y = 16*TILESIZE, w = 6*TILESIZE, h = TILESIZE, color=WALLCOLOR),
-            Rect(x = 16*TILESIZE, y = 17*TILESIZE, w = 7*TILESIZE, h = 6*TILESIZE, color=WALLCOLOR),
+            Rect(x = 16*TILESIZE, y = 17*TILESIZE, w = 7*TILESIZE, h = 5*TILESIZE, color=WALLCOLOR),
             Rect(x = 16*TILESIZE, y = 25*TILESIZE, w = 7*TILESIZE, h = 4*TILESIZE, color=WALLCOLOR),
             Rect(x = 16*TILESIZE, y = 16*TILESIZE, w = 17*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
             Rect(x = 17*TILESIZE, y = 2*TILESIZE, w = 16*TILESIZE, h = 1*TILESIZE, color=WALLCOLOR),
@@ -188,7 +192,7 @@ def reset_game():
     doors = [
             Rect(x=16*TILESIZE, y=7*TILESIZE, w=1*TILESIZE, h=7*TILESIZE, color=0),
             Rect(x=8*TILESIZE, y=16*TILESIZE, w=2*TILESIZE, h=1*TILESIZE, color=4),
-            Rect(x=16*TILESIZE, y=23*TILESIZE, w=1*TILESIZE, h=2*TILESIZE, color=13),
+            Rect(x=16*TILESIZE, y=22*TILESIZE, w=1*TILESIZE, h=3*TILESIZE, color=13),
             Rect(x=32*TILESIZE, y=9*TILESIZE, w=1*TILESIZE, h=5*TILESIZE, color=7)
 
         
@@ -196,23 +200,23 @@ def reset_game():
         ]
 
     Room1Moblins = [
-            Moblin(x = 5*TILESIZE, y = 25*TILESIZE, health = 3),
-            Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = 3),
-            Moblin(x = 8*TILESIZE, y = 25*TILESIZE, health = 3),
-            Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = 3),
-            Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = 3),
+            Moblin(x = 5*TILESIZE, y = 25*TILESIZE, health = MOBLIN_HEALTH),
+            Moblin(x = 5*TILESIZE, y = 20*TILESIZE, health = MOBLIN_HEALTH),
+            Moblin(x = 8*TILESIZE, y = 25*TILESIZE, health = MOBLIN_HEALTH),
+            Moblin(x = 13*TILESIZE, y = 25*TILESIZE, health = MOBLIN_HEALTH),
+            Moblin(x = 13*TILESIZE, y = 21*TILESIZE, health = MOBLIN_HEALTH),
         ]
 
     SecretRoomMoblins = [        
-            Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = 3),
-            Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = 3),
-            Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = 3),
+            Moblin(x = 42*TILESIZE, y = 26*TILESIZE, health = MOBLIN_HEALTH),
+            Moblin(x = 38*TILESIZE, y = 22*TILESIZE, health = MOBLIN_HEALTH),
+            Moblin(x = 35*TILESIZE, y = 19*TILESIZE, health = MOBLIN_HEALTH),
         ]
 
 
     dr1 = Rect(x = 256-TILESIZE, y = 112, w = 16, h = 112, color=7)
     dr2 = Rect(x=128, y=256 - TILESIZE, w=32, h=16, color=4)
-    dr3 = Rect(x=256 - TILESIZE, y=368, w=16, h=64, color=13)
+    dr3 = Rect(x=256 - TILESIZE, y=368 - TILESIZE, w=16, h=64, color=13)
     dr4 = Rect(x=496, y=144, w=16, h=80, color=7)
 
 
@@ -281,17 +285,26 @@ def updateArrowPosition(arrow):
         updatedplayer.arrow_dir = updatedplayer.direction
         arrow.x = updatedplayer.x
         arrow.y = updatedplayer.y
+
     if updatedplayer.arrow_frame > 0:
         updatedplayer.arrow_frame += 1
-#     print('updatedplayer.arrow_frame', updatedplayer.arrow_frame)    
+    
     if updatedplayer.arrow_dir == 'down':
-        arrow.y += TILESIZE
+        canGo = canYouGoThere(arrow.x, arrow.y + TILESIZE)
+        if canGo:
+            arrow.y += TILESIZE
     elif updatedplayer.arrow_dir == 'up':
-        arrow.y -= TILESIZE
+        canGo = canYouGoThere(arrow.x, arrow.y - TILESIZE)
+        if canGo:
+            arrow.y -= TILESIZE
     elif updatedplayer.arrow_dir == 'right':
-        arrow.x += TILESIZE
+        canGo = canYouGoThere(arrow.x + TILESIZE, arrow.y)
+        if canGo:
+            arrow.x += TILESIZE
     elif updatedplayer.arrow_dir == 'left':
-        arrow.x -= TILESIZE
+        canGo = canYouGoThere(arrow.x - TILESIZE, arrow.y)
+        if canGo:
+            arrow.x -= TILESIZE
 
 
 def vector2D(x1, y1, x2, y2):
@@ -320,9 +333,9 @@ def debugVector2D():
     print(vector2D(x1, y1, x2, y2))
 
 def update():
-    global game_over
-    global win
-#     print(pyxel.mouse_x // TILESIZE, pyxel.mouse_y // TILESIZE)
+    global game_over, win, boss_battle
+    
+    print(pyxel.mouse_x // TILESIZE, pyxel.mouse_y // TILESIZE)
     updateWeaponPosition(slash_sword)
     updateWeaponPosition(shoot_bow)
     updateArrowPosition(arrow)
@@ -376,7 +389,7 @@ def update():
         bow.y = TILESIZE * 28
         # print(updatedplayer.inventory)
     elif updatedplayer.x == quiver.x and updatedplayer.y == quiver.y:
-        updatedplayer.inventory.append(sword)
+        updatedplayer.inventory.append(quiver)
         quiver.x = TILESIZE * 9
         quiver.y = TILESIZE * 28
     #print(updatedplayer.direction)    
@@ -421,13 +434,13 @@ def update():
            moblin.y = -70
            
            
-    if random.random() < 0.05:
-        stepX, stepY = vector2D(Gannondorf.x, Gannondorf.y, updatedplayer.x, updatedplayer.y)
-        canGo1 = canYouGoThere(Gannondorf.x + stepX * TILESIZE, Gannondorf.y + stepY * TILESIZE)
-        canGo2 = canYouGoThere((Gannondorf.x + stepX * TILESIZE) + TILESIZE, (Gannondorf.y + stepY * TILESIZE) + TILESIZE)
+    if random.random() < 0.1:
+        stepX, stepY = vector2D(Gannondorf.x + TILESIZE, Gannondorf.y + TILESIZE, updatedplayer.x, updatedplayer.y)
+        canGo1 = canYouGoThere(Gannondorf.x + stepX * TILESIZE * 2, Gannondorf.y + stepY * TILESIZE * 2)
+        canGo2 = canYouGoThere((Gannondorf.x + stepX * TILESIZE * 2) + TILESIZE, (Gannondorf.y + stepY * TILESIZE * 2) + TILESIZE)
         if canGo1 and canGo2:
-            Gannondorf.x += stepX*TILESIZE
-            Gannondorf.y += stepY*TILESIZE
+            Gannondorf.x += stepX*TILESIZE*2
+            Gannondorf.y += stepY*TILESIZE*2
         
     if slash_sword.x >= Gannondorf.x and slash_sword.x < Gannondorf.x + TILESIZE*2 and slash_sword.y >= Gannondorf.y and slash_sword.y < Gannondorf.y + TILESIZE*2 and updatedplayer.slashing == True:
         Gannondorf.health -= 1
@@ -447,21 +460,21 @@ def update():
         open_chest.x = 24*TILESIZE
         open_chest.y = 19*TILESIZE
         key.x = TILESIZE * 11
-        key.y = TILESIZE * 35
+        key.y = TILESIZE * 28
     for door in doors:
-        for moblin in Room1Moblins:
-            if door.color == 0 and key in updatedplayer.inventory and updatedplayer.x >= dr1.x and updatedplayer.x < dr1.x+dr1.w and updatedplayer.y >= dr1.y and updatedplayer.y < dr1.y+dr1.h:
-                door.x = -1000000
-                door.x = -1000000
-            if door.color == 4 and updatedplayer.x >= dr2.x and updatedplayer.x < dr2.x+dr2.w and updatedplayer.y >= dr2.y and updatedplayer.y < dr2.y+dr2.h:
-                door.x = -1000000
-                door.x = -1000000
-            if door.color == 13 and updatedplayer.x >= dr3.x and updatedplayer.x < dr3.x+dr3.w and updatedplayer.y >= dr3.y and updatedplayer.y < dr3.y+dr3.h and Are_room_1_Moblins_dead(Room1Moblins) == True:
-                door.x = -1000000
-                door.x = -1000000
-            if door.color == 7 and updatedplayer.x >= dr4.x and updatedplayer.x < dr4.x+dr4.w and updatedplayer.y >= dr4.y and updatedplayer.y < dr4.y+dr4.h and Is_Gannon_dead() == True:
-                door.x = -1000000
-                door.x = -1000000
+        if door.color == 0 and key in updatedplayer.inventory and updatedplayer.x >= dr1.x and updatedplayer.x < dr1.x+dr1.w and updatedplayer.y >= dr1.y and updatedplayer.y < dr1.y+dr1.h:
+            door.x = -1000000
+            door.y = -1000000
+            boss_battle = True
+        if door.color == 4 and updatedplayer.x >= dr2.x and updatedplayer.x < dr2.x+dr2.w and updatedplayer.y >= dr2.y and updatedplayer.y < dr2.y+dr2.h:
+            door.x = -1000000
+            door.y = -1000000
+        if door.color == 13 and updatedplayer.x >= dr3.x and updatedplayer.x < dr3.x+dr3.w and updatedplayer.y >= dr3.y and updatedplayer.y < dr3.y+dr3.h and Are_room_1_Moblins_dead(Room1Moblins) == True:
+            door.x = -1000000
+            door.y = -1000000
+        if door.color == 7 and updatedplayer.x >= dr4.x and updatedplayer.x < dr4.x+dr4.w and updatedplayer.y >= dr4.y and updatedplayer.y < dr4.y+dr4.h and Is_Gannon_dead() == True:
+            door.x = -1000000
+            door.y = -1000000
 
     if pyxel.btnp(pyxel.KEY_R, repeat=1) and (game_over == True or win == True) :
         reset_game()
@@ -470,7 +483,7 @@ def update():
         game_over = True
     if Nadra.x == updatedplayer.x and Nadra.y == updatedplayer.y:
         win = True
-        
+   
 
 def draw():
     if game_over == True:
@@ -485,9 +498,12 @@ def draw():
         pyxel.blt(369, 248 - 80, 2, 16, 80, 16, 32)
         pyxel.text(367, 300 - 80, "YOU WIN!", 11)
         pyxel.text(350, 325 - 80, "PRESS R TO RESTART", 11)
-        
+ 
     else:
-        play_sound("game")
+        if boss_battle == True:
+            play_sound("boss")
+        else:
+            play_sound("game")
         pyxel.cls(5)
         for door in doors:
             pyxel.rect(door.x, door.y, door.w, door.h, door.color)    
@@ -551,16 +567,14 @@ def play_sound(sound):
     if whichSoundIsPlaying != sound:
         if sound == "game":
             pyxel.play(0, 2, loop=True)
-#             whichSoundIsPlaying = "game"
         elif sound == "lose":
             pyxel.play(0, 8)
-#             whichSoundIsPlaying = "lose"
         elif sound == "win":
             pyxel.play(0, 9)
-#             whichSoundIsPlaying = "win"
+        elif sound == "boss":
+            pyxel.play(0, 6, loop=True)
         elif sound == None:
             pyxel.stop()
-#             whichSoundIsPlaying = None
         whichSoundIsPlaying = sound
 
 pyxel.run(update, draw)

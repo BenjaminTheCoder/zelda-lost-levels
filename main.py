@@ -77,6 +77,7 @@ class Player(Agent):
 game_over = False
 win = False
 boss_battle = False
+boss_battle2 = False
 whichSoundIsPlaying = None
 heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
 updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
@@ -148,10 +149,12 @@ dr4 = Rect(x=496, y=144, w=16, h=80, color=7)
 def reset_game():
     global game_over, heart, updatedplayer, sword, slash_sword, shoot_bow, arrow, Din, bow, quiver
     global open_chest, closed_chest, key, Gannondorf, secretdoor1, secretdoor2, walls, doors
-    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win, boss_battle, whichSoundIsPlaying
+    global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win, boss_battle, whichSoundIsPlaying, boss_battle2
+
     game_over = False
     win = False
     boss_battle = False
+    boss_battle2 = False
     whichSoundIsPlaying = None
     heart = Item(x = 27 * TILESIZE, y = TILESIZE * 28, name = 'Heart', tile_x = 0, tile_y = 32)
     updatedplayer = Player(x = SCREEN_WIDTH // 5, y = SCREEN_HEIGHT // 5, inventory = [], direction = 'down', slashing = False, shooting = False, arrow_frame = 0, arrow_dir = 'up', health = 10)
@@ -333,9 +336,9 @@ def debugVector2D():
     print(vector2D(x1, y1, x2, y2))
 
 def update():
-    global game_over, win, boss_battle
+    global game_over, win, boss_battle, boss_battle2
     
-    print(pyxel.mouse_x // TILESIZE, pyxel.mouse_y // TILESIZE)
+    # print(pyxel.mouse_x // TILESIZE, pyxel.mouse_y // TILESIZE)
     updateWeaponPosition(slash_sword)
     updateWeaponPosition(shoot_bow)
     updateArrowPosition(arrow)
@@ -450,8 +453,11 @@ def update():
     if updatedplayer.x >= Gannondorf.x and updatedplayer.x < Gannondorf.x + TILESIZE*2 and updatedplayer.y >= Gannondorf.y and updatedplayer.y < Gannondorf.y + TILESIZE*2 and random.random() < 0.3:
         updatedplayer.health -= 2
     if Gannondorf.health <= 0:
-       Gannondorf.x = -70
-       Gannondorf.y = -70
+        Gannondorf.x = -70
+        Gannondorf.y = -70
+    if Gannondorf.health <= GANNONDORF_HEALTH//2:
+        boss_battle = False
+        boss_battle2 = True
         
     if closed_chest.x == updatedplayer.x and closed_chest.y == updatedplayer.y:
         updatedplayer.inventory.append(key)
@@ -465,7 +471,8 @@ def update():
         if door.color == 0 and key in updatedplayer.inventory and updatedplayer.x >= dr1.x and updatedplayer.x < dr1.x+dr1.w and updatedplayer.y >= dr1.y and updatedplayer.y < dr1.y+dr1.h:
             door.x = -1000000
             door.y = -1000000
-            boss_battle = True
+            if not boss_battle2:
+                boss_battle = True
         if door.color == 4 and updatedplayer.x >= dr2.x and updatedplayer.x < dr2.x+dr2.w and updatedplayer.y >= dr2.y and updatedplayer.y < dr2.y+dr2.h:
             door.x = -1000000
             door.y = -1000000
@@ -483,6 +490,7 @@ def update():
         game_over = True
     if Nadra.x == updatedplayer.x and Nadra.y == updatedplayer.y:
         win = True
+
    
 
 def draw():
@@ -502,6 +510,8 @@ def draw():
     else:
         if boss_battle == True:
             play_sound("boss")
+        elif boss_battle2 == True:
+            play_sound("boss2")
         else:
             play_sound("game")
         pyxel.cls(5)
@@ -573,6 +583,8 @@ def play_sound(sound):
             pyxel.play(0, 9)
         elif sound == "boss":
             pyxel.play(0, 6, loop=True)
+        elif sound == "boss2": 
+            pyxel.play(0, 5, loop=True)
         elif sound == None:
             pyxel.stop()
         whichSoundIsPlaying = sound

@@ -388,10 +388,10 @@ def draw():
                 pyxel.blt(closed_chest.x, closed_chest.y, 0, closed_chest.tile_x, closed_chest.tile_y, TILESIZE, TILESIZE)
                 pyxel.blt(open_chest.x, open_chest.y, 0, open_chest.tile_x, open_chest.tile_y, TILESIZE, TILESIZE)
                 pyxel.blt(key.x, key.y, 0, key.tile_x, key.tile_y, TILESIZE, TILESIZE, 7)
-                pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 128, 2*TILESIZE, 2*TILESIZE, 14)
+                pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 160, 2*TILESIZE, 2*TILESIZE, 14)
                 pyxel.blt(Nadra.x, Nadra.y, 0, Nadra.tile_x, Nadra.tile_y, TILESIZE, TILESIZE, 14)
-                pyxel.blt(moblin1.x, moblin1.y, 0, 32, 80, TILESIZE, TILESIZE, 14)
-                pyxel.blt(moblin2.x, moblin2.y, 0, 32, 80, TILESIZE, TILESIZE, 14)
+                pyxel.blt(moblin1.x, moblin1.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
+                pyxel.blt(moblin2.x, moblin2.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
         if player.direction == 'down':
             pyxel.blt(player.x, player.y, 0, 0, 0, 16, 16, 7)
         elif player.direction == 'up':

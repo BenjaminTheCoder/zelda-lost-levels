@@ -373,10 +373,11 @@ def draw():
         else:
             play_sound("game")
         pyxel.cls(5)
+        pyxel.bltm(0, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
         for door in doors:
             pyxel.rect(door.x, door.y, door.w, door.h, door.color)    
-        for wall in walls:
-            pyxel.rect(wall.x, wall.y, wall.w, wall.h, wall.color)
+#         for wall in walls:
+#             pyxel.rect(wall.x, wall.y, wall.w, wall.h, wall.color)
         #debug_rect = getDebugRect()
         for i in range(player.health):        
             pyxel.blt(heart.x + (i * TILESIZE * 2), heart.y, 0, heart.tile_x, heart.tile_y, TILESIZE, TILESIZE, 7)
@@ -424,7 +425,8 @@ def draw():
                 pyxel.blt(arrow.x, arrow.y, 0, arrow.tile_x_left, arrow.tile_y_left, TILESIZE, TILESIZE, arrow.alpha)    
         pyxel.rect(secretdoor1.x, secretdoor1.y, secretdoor1.w, secretdoor1.h, WALLCOLOR)
         pyxel.rect(secretdoor2.x, secretdoor2.y, secretdoor2.w, secretdoor2.h, WALLCOLOR)
-        
+
+
 def play_sound(sound):
     global whichSoundIsPlaying
     if whichSoundIsPlaying != sound:

@@ -445,7 +445,8 @@ def play_sound(sound):
         whichSoundIsPlaying = sound
 
 reset_game()
-pyxel.init(SCREEN_WIDTH, SCREEN_HEIGHT, fps=15, display_scale=2)
+# Jitter the screen widht and height by 1 pixel to improve rendering
+pyxel.init(SCREEN_WIDTH-1, SCREEN_HEIGHT-1, fps=15, display_scale=2)
 pyxel.load('assets.pyxres')
 pyxel.mouse(True)
 pyxel.run(update, draw)

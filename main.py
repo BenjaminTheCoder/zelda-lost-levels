@@ -74,7 +74,7 @@ player = None
 slash_sword = None 
 shoot_bow = None 
 arrow = None 
-Nadra = None 
+Din = None 
 bow = None 
 quiver = None 
 open_chest = None 
@@ -95,7 +95,7 @@ dr4 = None
 
 
 def reset_game():
-    global game_over, heart, player, sword, slash_sword, shoot_bow, arrow, Nadra, bow, quiver
+    global game_over, heart, player, sword, slash_sword, shoot_bow, arrow, Din, bow, quiver
     global open_chest, closed_chest, key, Gannondorf, secretdoor1, secretdoor2, walls, doors
     global Room1Moblins, SecretRoomMoblins, dr1, dr2, dr3, dr4, win, boss_battle, whichSoundIsPlaying, boss_battle2, Gannondorfs
     game_over = False
@@ -109,7 +109,7 @@ def reset_game():
     slash_sword = ItemWithDirection(x = -10*TILESIZE, y = -10*TILESIZE, tile_x_down = 16, tile_y_down = 32, tile_x_up = 64, tile_y_up = 0, tile_x_left = 48, tile_y_left = 32, tile_x_right = 32, tile_y_right = 32, alpha = 7)
     shoot_bow =   ItemWithDirection(x = -20*TILESIZE, y = -20*TILESIZE, tile_x_down = 16, tile_y_down = 64, tile_x_up = 0,  tile_y_up = 64,tile_x_left = 32, tile_y_left = 64, tile_x_right = 48, tile_y_right = 64, alpha = 14)
     arrow = ItemWithDirection(x = -30*TILESIZE, y = -30*TILESIZE, tile_x_down = 16, tile_y_down = 48, tile_x_up = 0,  tile_y_up = 48,tile_x_left = 32, tile_y_left = 48, tile_x_right = 48, tile_y_right = 48, alpha = 7)
-    Nadra = Item(x=640, y=80, name = 'Zelda', tile_x = 0, tile_y = 112)
+    Din = Item(x=640, y=80, name = 'Dinral', tile_x = 32, tile_y = 112)
     bow = Item(x = 26*TILESIZE, y = 19*TILESIZE, name = 'Bow', tile_x = 32, tile_y = 0)
     quiver = Item(x = 25*TILESIZE, y = 19*TILESIZE, name = 'Quiver', tile_x = 48 , tile_y = 0)
     open_chest = Item(x = -53*TILESIZE, y = -53*TILESIZE, name = 'Open_chest', tile_x = 48, tile_y = 80)
@@ -350,7 +350,7 @@ def update():
         reset_game()
     if player.health <= 0:
         game_over = True
-    if Nadra.x == player.x and Nadra.y == player.y:
+    if Din.x == player.x and Din.y == player.y:
         win = True
 
 def draw():
@@ -390,7 +390,7 @@ def draw():
                 pyxel.blt(open_chest.x, open_chest.y, 0, open_chest.tile_x, open_chest.tile_y, TILESIZE, TILESIZE)
                 pyxel.blt(key.x, key.y, 0, key.tile_x, key.tile_y, TILESIZE, TILESIZE, 7)
                 pyxel.blt(Gannondorf.x, Gannondorf.y, 0, 0, 160, 2*TILESIZE, 2*TILESIZE, 14)
-                pyxel.blt(Nadra.x, Nadra.y, 0, Nadra.tile_x, Nadra.tile_y, TILESIZE, TILESIZE, 14)
+                pyxel.blt(Din.x, Din.y, 0, Din.tile_x, Din.tile_y, TILESIZE, TILESIZE, 14)
                 pyxel.blt(moblin1.x, moblin1.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
                 pyxel.blt(moblin2.x, moblin2.y, 0, 16, 16, TILESIZE, TILESIZE, 14)
         if player.direction == 'down':
@@ -423,8 +423,8 @@ def draw():
             elif player.arrow_dir == 'left':
                 pyxel.blt(shoot_bow.x, shoot_bow.y, 0, shoot_bow.tile_x_left, shoot_bow.tile_y_left, TILESIZE, TILESIZE, shoot_bow.alpha)
                 pyxel.blt(arrow.x, arrow.y, 0, arrow.tile_x_left, arrow.tile_y_left, TILESIZE, TILESIZE, arrow.alpha)    
-        pyxel.rect(secretdoor1.x, secretdoor1.y, secretdoor1.w, secretdoor1.h, WALLCOLOR)
-        pyxel.rect(secretdoor2.x, secretdoor2.y, secretdoor2.w, secretdoor2.h, WALLCOLOR)
+#         pyxel.rect(secretdoor1.x, secretdoor1.y, secretdoor1.w, secretdoor1.h, WALLCOLOR)
+#         pyxel.rect(secretdoor2.x, secretdoor2.y, secretdoor2.w, secretdoor2.h, WALLCOLOR)
 
 
 def play_sound(sound):

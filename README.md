@@ -2,6 +2,16 @@
 
 Python Zelda game using the Pyxel game engine
 
+# Screenshots
+
+![Paper prototype](screenshots/paper_prototype.jpg)
+![gannon_battle](screenshots/gannon_battle.gif)
+![game_over](screenshots/game_over.png)
+![you_win](screenshots/you_win.png)
+![pyxel-20240722-182552](screenshots/pyxel-20240722-182552.png)
+![tilemap_grid](screenshots/tilemap_grid.png)
+My dad was OCD and made the lines on the grid pixel perfect.
+
 # Instructions
 
 First, install the pyxel game engine:

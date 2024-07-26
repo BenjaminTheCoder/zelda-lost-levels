@@ -10,7 +10,14 @@ Python Zelda game using the Pyxel game engine
 ![you_win](screenshots/you_win.png)
 ![pyxel-20240722-182552](screenshots/pyxel-20240722-182552.png)
 ![tilemap_grid](screenshots/tilemap_grid.png)
+
 My dad was OCD and made the lines on the grid pixel perfect.
+
+![sprites](screenshots/sprites.png)
+![pyxel_editor_link](screenshots/pyxel_editor_link.png)
+![pyxel_editor_music](screenshots/pyxel_editor_music.png)
+
+I made all these graphics and music myself in the pyxel editor.
 
 # Instructions
 
